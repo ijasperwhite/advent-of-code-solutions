@@ -1,0 +1,22 @@
+{
+  "name": "advent-of-code-2025-typescript",
+  "version": "1.0.0",
+  "description": "Template repository for solving Advent of Code puzzles using TypeScript.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "create:day": "./scripts/create_day.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ijasperwhite/advent-of-code-solutions"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}
