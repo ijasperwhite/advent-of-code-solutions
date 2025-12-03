@@ -11,7 +11,7 @@ class DaySix {
     }
 
     private fun getStartIndex(s: String, subStringSize: Int): Int {
-        return (subStringSize .. s.length).toList().first { isUniqueSubString(s, it, subStringSize) }
+        return (subStringSize..s.length).toList().first { isUniqueSubString(s, it, subStringSize) }
     }
 
     private fun isUniqueSubString(s: String, i: Int, subStringSize: Int): Boolean {

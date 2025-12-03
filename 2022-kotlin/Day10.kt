@@ -1,6 +1,6 @@
 package weektwo
 
-class DayThree {
+class DayTen {
     fun partOne(list: List<String>): Long {
         var initial = 1L
         var counter = 0L
@@ -65,17 +65,17 @@ class DayThree {
         return this == "noop"
     }
 
-    private fun String.isAddX() : Boolean {
+    private fun String.isAddX(): Boolean {
         return this.substring(0, 4) == "addx"
     }
 
-    private fun Long.isCounterCycle() : Boolean {
+    private fun Long.isCounterCycle(): Boolean {
         return (this.mod(40)) - 20 == 0
     }
 
     private fun checkPrint(counter: Long, current: Long) {
         val modValue = counter.mod(40).toLong()
-        if (modValue == current || modValue == current -1 || modValue == current + 1) {
+        if (modValue == current || modValue == current - 1 || modValue == current + 1) {
             print("#")
         } else {
             print(".")
