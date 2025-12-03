@@ -1,6 +1,3 @@
-import { puzzle } from "../input-puzzles/day01-puzzle";
-import { exampleOne, exampleTwo } from "../input-examples/day01-examples";
-
 // PART ONE
 
 const getValueOne = (s: string) => {
@@ -10,9 +7,6 @@ const getValueOne = (s: string) => {
 
 export const solveOne = (s: string): number =>
   s.split("\n").reduce((curr, next) => curr + getValueOne(next), 0);
-
-console.log("pt1 example", solveOne(exampleOne), "to be", 142);
-console.log("pt1 result", solveOne(puzzle), "to be", 55488);
 
 // PART TWO
 
@@ -68,6 +62,3 @@ const getValueTwo = (s: string): number => {
 
 export const solveTwo = (s: string): number =>
   s.split("\n").reduce((prev, curr) => prev + getValueTwo(curr), 0);
-
-console.log("pt 2 example", solveTwo(exampleTwo), "to be", 281);
-console.log("pt 2 result", solveTwo(puzzle), "to be", 56324);
