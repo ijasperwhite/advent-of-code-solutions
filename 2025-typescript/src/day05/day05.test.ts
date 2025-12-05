@@ -1,19 +1,110 @@
 import { describe, it, expect } from "vitest";
-import { partOne, partTwo } from "./day05";
+import { isFresh, mergeRanges, partOne, partTwo, toRangeOrId } from "./day05";
 import { fileContents } from "../utils/utils";
 
 describe("Day 05", () => {
+  describe("toRangeOrId", () => {
+    it("should return a single number", () => {
+      const result = toRangeOrId("55");
+      expect(result).toEqual(55);
+    });
+    it("should return null", () => {
+      const result = toRangeOrId("");
+      expect(result).toEqual(null);
+    });
+    it("should return a range", () => {
+      const result = toRangeOrId("50-66");
+      expect(result).toEqual({ first: 50, last: 66 });
+    });
+  });
+
+  describe("isFresh", () => {
+    it("should return true when id is within a range", () => {
+      const result = isFresh(55, [
+        { first: 1, last: 10 },
+        { first: 40, last: 60 },
+      ]);
+      expect(result).toEqual(true);
+    });
+    it("should return false when id is not within a range", () => {
+      const result = isFresh(15, [
+        { first: 1, last: 10 },
+        { first: 40, last: 60 },
+      ]);
+      expect(result).toEqual(false);
+    });
+  });
+
   describe("Part 1", () => {
     it("should return result for example", () => {
       const input = fileContents("day05/example.txt");
       const result = partOne(input);
-      expect(result).toBe(0);
+      expect(result).toBe(3);
     });
 
     it("should return result for input", () => {
       const input = fileContents("day05/input.txt");
       const result = partOne(input);
-      expect(result).toBe(0);
+      expect(result).toBe(613);
+    });
+  });
+
+  describe("mergeRanges", () => {
+    it("should add new range when no overlap", () => {
+      const result = mergeRanges({ first: 5, last: 9 }, [
+        { first: 1, last: 4 },
+        { first: 10, last: 15 },
+      ]);
+      expect(result).toEqual([
+        { first: 1, last: 4 },
+        { first: 10, last: 15 },
+        { first: 5, last: 9 },
+      ]); // done
+    });
+
+    it("should not add new range when inside existing one", () => {
+      const result = mergeRanges({ first: 2, last: 3 }, [
+        { first: 1, last: 4 },
+        { first: 10, last: 15 },
+      ]);
+      expect(result).toEqual([
+        { first: 1, last: 4 },
+        { first: 10, last: 15 },
+      ]); // done
+    });
+
+    it("should merge ranges when there is one overlap on new first", () => {
+      const result = mergeRanges({ first: 4, last: 9 }, [
+        { first: 1, last: 6 },
+        { first: 10, last: 15 },
+      ]);
+      expect(result).toEqual([
+        { first: 10, last: 15 },
+        { first: 1, last: 9 },
+      ]);
+    });
+
+    it("should merge ranges when there is one overlap on new last", () => {
+      const result = mergeRanges({ first: 4, last: 9 }, [
+        { first: 1, last: 3 },
+        { first: 8, last: 15 },
+      ]);
+      expect(result).toEqual([
+        { first: 1, last: 3 },
+        { first: 4, last: 15 },
+      ]);
+    });
+
+    it("should merge ranges when there is two overlap", () => {
+      const result = mergeRanges({ first: 5, last: 9 }, [
+        { first: 1, last: 2 },
+        { first: 4, last: 6 },
+        { first: 8, last: 11 },
+      ]);
+      expect(result).toEqual([
+        { first: 1, last: 2 },
+        { first: 4, last: 11 },
+      ]);
     });
   });
 
@@ -21,13 +112,15 @@ describe("Day 05", () => {
     it("should return result for example", () => {
       const input = fileContents("day05/example.txt");
       const result = partTwo(input);
-      expect(result).toBe(0);
+      expect(result).toBe(14);
     });
 
     it("should return result for input", () => {
       const input = fileContents("day05/input.txt");
       const result = partTwo(input);
       expect(result).toBe(0);
+      // too low 309930569780640
+      // too low 309930569780555
     });
   });
 });
