@@ -57,8 +57,8 @@ describe("Day 05", () => {
       ]);
       expect(result).toEqual([
         { first: 1, last: 4 },
-        { first: 10, last: 15 },
         { first: 5, last: 9 },
+        { first: 10, last: 15 },
       ]); // done
     });
 
@@ -79,8 +79,8 @@ describe("Day 05", () => {
         { first: 10, last: 15 },
       ]);
       expect(result).toEqual([
-        { first: 10, last: 15 },
         { first: 1, last: 9 },
+        { first: 10, last: 15 },
       ]);
     });
 
@@ -121,6 +121,8 @@ describe("Day 05", () => {
       expect(result).toBe(0);
       // too low 309930569780640
       // too low 309930569780555
+      // too low 85737278392197
+      // not     242052446985560
     });
   });
 });

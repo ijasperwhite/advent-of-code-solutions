@@ -37,12 +37,12 @@ export const mergeRanges = (range: Range, allRanges: Range[]): Range[] => {
   if (allRanges.length === 0) return [range];
   // in middle
   if (allRanges.some((i) => i.first < range.first && i.last > range.last)) {
-    console.log("in middle of range", range, allRanges);
+    // console.log("in middle of range", range, allRanges);
     return allRanges;
   }
   // new range
   if (allRanges.every((i) => range.first > i.last || range.last < i.first)) {
-    console.log("adding new range", range, allRanges);
+    // console.log("adding new range", range, allRanges);
     return [...allRanges, range].sort((a, b) => a.first - b.first);
   }
   const firstOverLapIndex = allRanges.findIndex(
@@ -56,12 +56,12 @@ export const mergeRanges = (range: Range, allRanges: Range[]): Range[] => {
   const result = [...allRanges];
 
   if (firstOverLapIndex >= 0 && lastOverlapIndex >= 0) {
-    console.log(
-      "merging two three ranges",
-      range,
-      allRanges[firstOverLapIndex],
-      allRanges[lastOverlapIndex]
-    );
+    // console.log(
+    //   "merging two three ranges",
+    //   range,
+    //   allRanges[firstOverLapIndex],
+    //   allRanges[lastOverlapIndex]
+    // );
 
     result.splice(firstOverLapIndex, 1);
     result.splice(lastOverlapIndex - 1, 1);
@@ -74,7 +74,7 @@ export const mergeRanges = (range: Range, allRanges: Range[]): Range[] => {
     ].sort((a, b) => a.first - b.first);
   }
   if (firstOverLapIndex >= 0) {
-    console.log("first value overlap", range, allRanges[firstOverLapIndex]);
+    // console.log("first value overlap", range, allRanges[firstOverLapIndex]);
 
     result.splice(firstOverLapIndex, 1);
     return [
@@ -86,7 +86,7 @@ export const mergeRanges = (range: Range, allRanges: Range[]): Range[] => {
     ].sort((a, b) => a.first - b.first);
   }
   if (lastOverlapIndex >= 0) {
-    console.log("last value overlap", range, allRanges[lastOverlapIndex]);
+    // console.log("last value overlap", range, allRanges[lastOverlapIndex]);
 
     result.splice(lastOverlapIndex, 1);
     return [
@@ -98,29 +98,40 @@ export const mergeRanges = (range: Range, allRanges: Range[]): Range[] => {
     ].sort((a, b) => a.first - b.first);
   }
 
+  console.log("no condition found");
+
   return [];
 };
 
 export const partTwo = (s: string) => {
-  const { ids, ranges } = s.split("\n").reduce(
-    (sum, row) => {
-      const rangeOrId = toRangeOrId(row);
-      if (!rangeOrId) return sum;
-      if (rangeOrId)
-        if (typeof rangeOrId === "number") {
-          return { ...sum, ids: [...sum.ids, rangeOrId] };
-        }
-      return { ...sum, ranges: [...sum.ranges, rangeOrId as Range] };
-    },
-    { ranges: [], ids: [] } as { ranges: Range[]; ids: number[] }
-  );
+  const ranges = s
+    .split("\n")
+    .reduce(
+      (sum, row) => {
+        const rangeOrId = toRangeOrId(row);
+        if (!rangeOrId) return sum;
+        if (rangeOrId)
+          if (typeof rangeOrId === "number") {
+            return { ...sum, ids: [...sum.ids, rangeOrId] };
+          }
+        return { ...sum, ranges: [...sum.ranges, rangeOrId as Range] };
+      },
+      { ranges: [], ids: [] } as { ranges: Range[]; ids: number[] }
+    )
+    .ranges.sort((a, b) => a.first - b.first);
+
+  console.log("sorted ranges", ranges, "size", ranges.length);
+
   const merged = ranges.reduce((sum, next, i) => {
-    if (i >= 20) return sum;
-    console.log(i, "next item", next, "merged", sum);
-    return mergeRanges(next, sum);
+    // if (i >= 20) return sum;
+    const merge = mergeRanges(next, sum);
+
+    // console.log(i, "next item", next, "merged", merge);
+    console.log("merged size", merge.length);
+    return merge;
   }, [] as Range[]);
 
-  console.log("merged", merged);
+  // console.log("merged", merged);
 
   return merged.reduce((sum, next) => {
     return sum + (next.last - next.first + 1);
