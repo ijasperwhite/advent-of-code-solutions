@@ -1,0 +1,4 @@
+## Ignore files that contain advent of code puzzle inputs
+**/problem*.txt
+**/example*.txt
+**/input*.txt

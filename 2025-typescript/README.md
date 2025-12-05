@@ -1,4 +1,4 @@
-# advent-of-code-typescript-template
+# advent-of-code-2025-typescript
 
 ## Useful links
 

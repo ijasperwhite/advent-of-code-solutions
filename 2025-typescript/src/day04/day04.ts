@@ -31,9 +31,7 @@ export const countPaper = (arr: string[][], current: Vector): number => {
 const countPaperInArray = (
   arr: string[][]
 ): { count: number; nextArr: string[][] } => {
-  const nextArr = [...arr.keys()].map((_, y) =>
-    [...arr[0].keys()].map((_, x) => arr[y][x])
-  ); // copy the current arr
+  const nextArr = arr.map((row) => [...row]);
   const count = arr.reduce(
     (total, newCol, y) =>
       total +
