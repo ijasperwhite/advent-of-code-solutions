@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { isFresh, mergeRanges, partOne, partTwo, toRangeOrId } from "./day05";
+import {
+  isFresh,
+  mergeRangeNew,
+  mergeRanges,
+  partOne,
+  partTwo,
+  toRangeOrId,
+} from "./day05";
 import { fileContents } from "../utils/utils";
 
 describe("Day 05", () => {
@@ -105,6 +112,58 @@ describe("Day 05", () => {
         { first: 1, last: 2 },
         { first: 4, last: 11 },
       ]);
+    });
+  });
+
+  describe("mergeRangeNew", () => {
+    it(" should return 2 when a<b", () => {
+      const result = mergeRangeNew(
+        { first: 8, last: 10 },
+        { first: 15, last: 17 }
+      );
+      expect(result).toEqual([
+        { first: 8, last: 10 },
+        { first: 15, last: 17 },
+      ]);
+    });
+    it(" should return 2 when a>b", () => {
+      const result = mergeRangeNew(
+        { first: 8, last: 10 },
+        { first: 4, last: 6 }
+      );
+      expect(result).toEqual([
+        { first: 8, last: 10 },
+        { first: 4, last: 6 },
+      ]);
+    });
+
+    it(" should return 1 when a>b", () => {
+      const result = mergeRangeNew(
+        { first: 2, last: 10 },
+        { first: 4, last: 6 }
+      );
+      expect(result).toEqual([{ first: 2, last: 10 }]);
+    });
+    it(" should return 1 when a>>b", () => {
+      const result = mergeRangeNew(
+        { first: 5, last: 10 },
+        { first: 4, last: 6 }
+      );
+      expect(result).toEqual([{ first: 4, last: 10 }]);
+    });
+    it(" should return 1 when a<b", () => {
+      const result = mergeRangeNew(
+        { first: 4, last: 6 },
+        { first: 2, last: 10 }
+      );
+      expect(result).toEqual([{ first: 2, last: 10 }]);
+    });
+    it(" should return 1 when a<<b", () => {
+      const result = mergeRangeNew(
+        { first: 4, last: 6 },
+        { first: 5, last: 10 }
+      );
+      expect(result).toEqual([{ first: 4, last: 10 }]);
     });
   });
 

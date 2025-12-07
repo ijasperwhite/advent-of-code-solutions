@@ -103,8 +103,16 @@ export const mergeRanges = (range: Range, allRanges: Range[]): Range[] => {
   return [];
 };
 
+// assume in order
+export const mergeRangeNew = (a: Range, b: Range): Range[] => {
+  if (a.last < b.first || b.last < a.first) return [a, b];
+  return [
+    { first: Math.min(a.first, b.first), last: Math.max(a.last, b.last) },
+  ];
+};
+
 export const partTwo = (s: string) => {
-  const ranges = s
+  let ranges = s
     .split("\n")
     .reduce(
       (sum, row) => {
@@ -120,20 +128,22 @@ export const partTwo = (s: string) => {
     )
     .ranges.sort((a, b) => a.first - b.first);
 
-  console.log("sorted ranges", ranges, "size", ranges.length);
+  // console.log("sorted ranges", ranges, "size", ranges.length);
 
-  const merged = ranges.reduce((sum, next, i) => {
-    // if (i >= 20) return sum;
-    const merge = mergeRanges(next, sum);
+  let count;
+  let counter = 0;
+  do {
+    counter += 1;
+    console.log("next counter", counter);
+    count = ranges.length;
+    ranges = ranges.reduce((sum, next, i) => {
+      const merge = mergeRanges(next, sum);
+      // console.log("merged size", merge.length);
+      return merge;
+    }, [] as Range[]);
+  } while (count !== ranges.length);
 
-    // console.log(i, "next item", next, "merged", merge);
-    console.log("merged size", merge.length);
-    return merge;
-  }, [] as Range[]);
-
-  // console.log("merged", merged);
-
-  return merged.reduce((sum, next) => {
+  return ranges.reduce((sum, next) => {
     return sum + (next.last - next.first + 1);
   }, 0);
 };
