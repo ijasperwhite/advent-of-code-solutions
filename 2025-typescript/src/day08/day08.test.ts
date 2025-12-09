@@ -24,12 +24,12 @@ describe("Day 08", () => {
         { x: 162, y: 817, z: 812 },
         { x: 425, y: 690, z: 689 }
       );
-      expect(result).toEqual(316);
+      expect(result).toEqual(316.90219311326956);
     });
   });
 
   describe("getBatteryShortestDistance", () => {
-    it("should return shortest distance for a battery when lower is 0", () => {
+    it("should return shortest distance for a battery provided", () => {
       const start = { x: 162, y: 817, z: 812 };
       const all = [
         { x: 57, y: 618, z: 57 },
@@ -48,7 +48,7 @@ describe("Day 08", () => {
       });
     });
 
-    it("should return shortest distance for a battery when lower", () => {
+    it("should return shortest distance for a battery when lower for another", () => {
       const start = { x: 431, y: 825, z: 988 };
       const all = [
         { x: 57, y: 618, z: 57 },
@@ -69,7 +69,7 @@ describe("Day 08", () => {
   });
 
   describe("getAllShortest", () => {
-    it("should return all shortest", () => {
+    it("should return all shortest from lowest to highest", () => {
       const all = [
         { x: 57, y: 618, z: 57 },
         { x: 906, y: 360, z: 560 },
@@ -86,25 +86,14 @@ describe("Day 08", () => {
 
   describe("addCircuit", () => {
     it("should add the new circuit to new item", () => {
-      const result = addCircuit(
-        {
-          start: { x: 12, y: 15, z: 30 },
-          end: { x: 10, y: 40, z: 32 },
-          distance: 555,
-        },
-        []
-      );
+      const result = addCircuit({ start: "12,15,30", end: "10,40,32" }, []);
       expect(result).toEqual([new Set(["12,15,30", "10,40,32"])]);
     });
     it("should add the new circuit to existing item", () => {
-      const result = addCircuit(
-        {
-          start: { x: 42, y: 76, z: 9 },
-          end: { x: 12, y: 15, z: 30 },
-          distance: 555,
-        },
-        [new Set(["2,5,90", "16,55,66"]), new Set(["12,15,30", "10,40,32"])]
-      );
+      const result = addCircuit({ start: "42,76,9", end: "12,15,30" }, [
+        new Set(["2,5,90", "16,55,66"]),
+        new Set(["12,15,30", "10,40,32"]),
+      ]);
       expect(result).toEqual([
         new Set(["2,5,90", "16,55,66"]),
         new Set(["12,15,30", "10,40,32", "42,76,9"]),
