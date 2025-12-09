@@ -19,28 +19,26 @@ export const explore = (
   return 0; // base case
 };
 
+const cache = new Map<string, number>();
+
 export const exploreWorlds = (
   rows: string[],
   columnIndex: number,
-  rowIndex: number,
-  visited: string
-): Set<string> => {
+  rowIndex: number
+): number => {
   for (let i = rowIndex + 1; i < rows.length; i++) {
-    const curr = rows[i].charAt(columnIndex);
-    if (curr !== "." && curr !== "^") return visited;
-    if (curr === "^") {
-      const next = visited + `&${rowIndex}.${columnIndex}`;
-      const left = exploreWorlds(rows, columnIndex - 1, i, next);
-      const right = exploreWorlds(rows, columnIndex + 1, i, next);
-      rows[i] = rows[i]
-        .split("")
-        .map((b, j) => (j === columnIndex ? "*" : b))
-        .join("");
-      return left + right;
+    if (rows[i].charAt(columnIndex) === "^") {
+      if (cache.has(`${rowIndex}_${columnIndex}`)) {
+        return cache.get(`${rowIndex}_${columnIndex}`)!;
+      }
+      const left = exploreWorlds(rows, columnIndex - 1, i);
+      const right = exploreWorlds(rows, columnIndex + 1, i);
+      cache.set(`${rowIndex}_${columnIndex}`, right + left);
+
+      return right + left;
     }
   }
-  console.log("returning visited", rowIndex, columnIndex, visited);
-  return visited; // base case
+  return 1; // base case
 };
 
 export const partOne = (s: string) => {
@@ -53,6 +51,6 @@ export const partOne = (s: string) => {
 export const partTwo = (s: string) => {
   const rows = s.split("\n");
   const start = rows[0].indexOf("S");
-  const result = exploreWorlds(rows, start, 0, 1);
+  const result = exploreWorlds(rows, start, 0);
   return result;
 };

@@ -36,40 +36,35 @@ const init: Circuit = {
   distance: 100_000,
 };
 
-export const getBatterShortestDistance = (
+export const getBatteryShortestDistance = (
   start: Battery,
-  all: Battery[],
-  lower: number,
-  circuits: Set<string>[]
-): Circuit => {
-  return all.reduce((sum, next) => {
-    if (batteryToString(start) === batteryToString(next)) return sum;
-    const d = toDistance(start, next);
+  all: Battery[]
+): Circuit | null => {
+  return all.reduce((sum, end) => {
+    if (batteryToString(start) === batteryToString(end)) return sum;
+    const d = toDistance(start, end);
+    if (sum === null) {
+      return { start, end, distance: d };
+    }
     if (d === 0) return sum;
-
-    // if start and next both feature in a single circuit, then is invalid.
-    const a = batteryToString(start);
-    const b = batteryToString(next);
-    const isInvalid = circuits.find((i) => {
-      i.has(a) && i.has(b);
-    });
-    if (!!isInvalid) return sum;
-
-    return d < sum.distance && d > lower
-      ? { start, end: next, distance: d }
-      : sum;
-  }, init);
+    return d < sum.distance! ? { start, end, distance: d } : sum;
+  }, null as Circuit | null);
 };
 
-export const getAllShortest = (
-  all: Battery[],
-  lower: number,
-  circuits: Set<string>[]
-): Circuit[] => {
-  return all.map((next, i) => {
-    const result = getBatterShortestDistance(next, all, lower, circuits);
-    return { start: next, end: result.end, distance: result.distance };
-  });
+export const getAllShortest = (all: Battery[]): Circuit[] => {
+  return all
+    .map((next, i) => {
+      const nextAll = [...all].slice(i, all.length);
+      const result = getBatteryShortestDistance(next, nextAll);
+      if (result === null) return null;
+      return {
+        start: result.start,
+        end: result.end,
+        distance: result.distance,
+      };
+    })
+    .filter((i) => !!i)
+    .sort((a, b) => a.distance - b.distance);
 };
 
 export const addCircuit = (
@@ -109,7 +104,7 @@ export const partOne = (s: string, limit: number) => {
   let lower = 0;
   let circuits: Set<string>[] = [];
   do {
-    const shortest = getAllShortest(batteries, lower, circuits);
+    const shortest = getAllShortest(batteries);
     const min = shortest.reduce((prev, next) => {
       if (next.distance < prev.distance) {
         return next;

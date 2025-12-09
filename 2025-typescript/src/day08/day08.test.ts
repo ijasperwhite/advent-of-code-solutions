@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   addCircuit,
   getAllShortest,
-  getBatterShortestDistance,
+  getBatteryShortestDistance,
   partOne,
   partTwo,
   toBattery,
@@ -40,16 +40,16 @@ describe("Day 08", () => {
         { x: 425, y: 690, z: 689 },
         { x: 984, y: 92, z: 344 },
       ];
-      const result = getBatterShortestDistance(start, all, 0, []);
+      const result = getBatteryShortestDistance(start, all);
       expect(result).toEqual({
         start,
         end: { x: 425, y: 690, z: 689 },
-        distance: 316,
+        distance: 316.90219311326956,
       });
     });
 
-    it("should return shortest distance for a battery when lower is 316", () => {
-      const start = { x: 162, y: 817, z: 812 };
+    it("should return shortest distance for a battery when lower", () => {
+      const start = { x: 431, y: 825, z: 988 };
       const all = [
         { x: 57, y: 618, z: 57 },
         { x: 906, y: 360, z: 560 },
@@ -59,11 +59,11 @@ describe("Day 08", () => {
         { x: 425, y: 690, z: 689 },
         { x: 984, y: 92, z: 344 },
       ];
-      const result = getBatterShortestDistance(start, all, 316, []);
+      const result = getBatteryShortestDistance(start, all);
       expect(result).toEqual({
         start,
-        end: { x: 592, y: 479, z: 940 },
-        distance: 561,
+        end: { x: 162, y: 817, z: 812 },
+        distance: 321.560258738545,
       });
     });
   });
@@ -79,7 +79,7 @@ describe("Day 08", () => {
         { x: 425, y: 690, z: 689 },
         { x: 984, y: 92, z: 344 },
       ];
-      const result = getAllShortest(all, 0, []);
+      const result = getAllShortest(all);
       expect(result).toEqual([]);
     });
   });
