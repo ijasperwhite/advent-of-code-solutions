@@ -54,6 +54,17 @@ export const getAllShortest = (all: Battery[]): Circuit[] => {
     .sort((a, b) => a.distance - b.distance);
 };
 
+export const getAllConnections = (all: Battery[]): Circuit[] => {
+  const result: Circuit[] = [];
+  for (let i = 0; i < all.length; i++) {
+    for (let j = i + 1; j < all.length; j++) {
+      const distance = toDistance(all[i], all[j]);
+      result.push({ start: all[i], end: all[j], distance });
+    }
+  }
+  return result.sort((a, b) => a.distance - b.distance);
+};
+
 export const addCircuit = (
   c: { start: string; end: string },
   result: Set<string>[]
@@ -85,22 +96,22 @@ export const addCircuit = (
 export const partOne = (s: string, limit: number) => {
   const batteries = s.split("\n").map(toBattery);
   let circuits: Set<string>[] = [];
-  const short = getAllShortest(batteries).map((a) => {
+  const short = getAllConnections(batteries).map((a) => {
     return { start: batteryToString(a.start), end: batteryToString(a.end) };
   });
-  console.log("shorted 10", short.slice(999, 1000));
+  console.log("check the length", short.length, short.slice(0, 10));
 
   let [n, i] = [0, 0];
-  do {
-    try {
-      circuits = addCircuit(short[n], circuits);
-    } catch (e: unknown) {
-      console.error("faid on n", n, short[n]);
-      n = limit;
-    }
-    // console.log("next shortest to add", short[n]);
-    n++;
-  } while (n < limit - 1);
+  // do {
+  //   try {
+  //     circuits = addCircuit(short[n], circuits);
+  //   } catch (e: unknown) {
+  //     console.error("faid on n", n, short[n]);
+  //     n = limit;
+  //   }
+  //   // console.log("next shortest to add", short[n]);
+  //   n++;
+  // } while (n < limit - 1);
   console.log("current circuits", circuits);
 
   const sorted = circuits.map((i) => i.size).sort((a, b) => b - a);
