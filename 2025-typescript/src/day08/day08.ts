@@ -98,5 +98,46 @@ export const partOne = (s: string, limit: number) => {
 };
 
 export const partTwo = (s: string) => {
+  const batteries = s.split("\n").map(toBattery);
+  const sorted = getAllConnections(batteries).map((a) => {
+    return { start: batteryToString(a.start), end: batteryToString(a.end) };
+  });
+  const target = batteries.length;
+
+  const edges = new Map<string, Set<string>>();
+  batteries.forEach((b) => {
+    const path = batteryToString(b);
+    edges.set(path, new Set([path]));
+  });
+  let n = 0;
+
+  while (n < sorted.length) {
+    const { start, end } = sorted[n];
+
+    const startValues = edges.get(start)!;
+    const endValues = edges.get(end)!;
+    const stack: string[] = [...startValues, ...endValues];
+    const nodes = new Set([...stack]);
+
+    let i = nodes.size;
+    while (stack.length > 0) {
+      const next = stack.pop()!;
+      const nextValues = [...edges.get(next)!];
+      nextValues.forEach((a) => {
+        if (!nodes.has(a)) {
+          i++;
+          nodes.add(a);
+          stack.push(a);
+        }
+      });
+    }
+    if (i === target) {
+      return toBattery(start).x * toBattery(end).x;
+    }
+    edges.set(start, new Set([...startValues, ...endValues]));
+    edges.set(end, new Set([...endValues, ...startValues]));
+    n++;
+  }
+  // should not get here
   return 0;
 };

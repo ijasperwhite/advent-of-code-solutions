@@ -35,16 +35,16 @@ describe("Day 08", () => {
   });
 
   describe("Part 2", () => {
-    it("should return result for example", () => {
+    it("should return result for example for part two", () => {
       const input = fileContents("day08/example.txt");
       const result = partTwo(input);
-      expect(result).toBe(0);
+      expect(result).toBe(25272);
     });
 
-    it("should return result for input", () => {
+    it("should return result for input for part two", () => {
       const input = fileContents("day08/input.txt");
       const result = partTwo(input);
-      expect(result).toBe(0);
+      expect(result).toBe(8663467782);
     });
   });
 });
