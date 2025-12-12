@@ -18,106 +18,83 @@ export const toBattery = (s: string): Battery => {
 
 export const batteryToString = (b: Battery): string => `${b.x},${b.y},${b.z}`;
 
-export const toDistance = (start: Battery, end: Battery): number => {
-  return Math.sqrt(
-    Math.pow(start.x - end.x, 2) +
-      Math.pow(start.y - end.y, 2) +
-      Math.pow(start.z - end.z, 2)
-  );
-};
-
-export const getBatteryShortestDistance = (
-  start: Battery,
-  all: Battery[]
-): Circuit | null => {
-  return all.reduce((sum, end) => {
-    if (batteryToString(start) === batteryToString(end)) return sum;
-    const distance = toDistance(start, end);
-    if (sum === null) return { start, end, distance };
-    return distance < sum.distance ? { start, end, distance } : sum;
-  }, null as Circuit | null);
-};
-
-export const getAllShortest = (all: Battery[]): Circuit[] => {
-  return all
-    .map((next, i) => {
-      const nextAll = [...all].slice(i, all.length);
-      const result = getBatteryShortestDistance(next, nextAll);
-      if (result === null) return null;
-      return {
-        start: result.start,
-        end: result.end,
-        distance: result.distance,
-      };
-    })
-    .filter((i) => !!i)
-    .sort((a, b) => a.distance - b.distance);
-};
+export const toDistance = (start: Battery, end: Battery): number =>
+  Math.pow(start.x - end.x, 2) +
+  Math.pow(start.y - end.y, 2) +
+  Math.pow(start.z - end.z, 2);
 
 export const getAllConnections = (all: Battery[]): Circuit[] => {
   const result: Circuit[] = [];
   for (let i = 0; i < all.length; i++) {
     for (let j = i + 1; j < all.length; j++) {
-      const distance = toDistance(all[i], all[j]);
-      result.push({ start: all[i], end: all[j], distance });
+      result.push({
+        start: all[i],
+        end: all[j],
+        distance: toDistance(all[i], all[j]),
+      });
     }
   }
   return result.sort((a, b) => a.distance - b.distance);
 };
 
-export const addCircuit = (
-  c: { start: string; end: string },
-  result: Set<string>[]
-): Set<string>[] => {
-  let isNew = true;
-  const addedIndex: number[] = [];
-  [...result].forEach((item, i) => {
-    if (item.has(c.start) || item.has(c.end)) {
-      isNew = false;
-      result[i].add(c.start);
-      result[i].add(c.end);
-      addedIndex.push(i);
-    }
-  });
-  if (isNew) {
-    result.push(new Set<string>([c.start, c.end]));
-  }
-  if (addedIndex.length === 2) {
-    const a = result[addedIndex[0]];
-    const b = result[addedIndex[1]];
-    //console.log("a", a, "b", b);
-    result.push(new Set([...a, ...b]));
-    result.splice(addedIndex[0], 1);
-    result.splice(addedIndex[1] - 1, 1);
-  }
-  return result;
-};
-
 export const partOne = (s: string, limit: number) => {
   const batteries = s.split("\n").map(toBattery);
-  let circuits: Set<string>[] = [];
-  const short = getAllConnections(batteries).map((a) => {
+  const sorted = getAllConnections(batteries).map((a) => {
     return { start: batteryToString(a.start), end: batteryToString(a.end) };
   });
-  console.log("check the length", short.length, short.slice(0, 10));
+  let n = 0;
+  const nodes = new Set<string>();
+  const edges = new Map<string, Set<string>>();
+  do {
+    const { start, end } = sorted[n];
+    nodes.add(start);
+    nodes.add(end);
 
-  let [n, i] = [0, 0];
-  // do {
-  //   try {
-  //     circuits = addCircuit(short[n], circuits);
-  //   } catch (e: unknown) {
-  //     console.error("faid on n", n, short[n]);
-  //     n = limit;
-  //   }
-  //   // console.log("next shortest to add", short[n]);
-  //   n++;
-  // } while (n < limit - 1);
-  console.log("current circuits", circuits);
+    const currStartEdges = edges.get(start);
+    const currEndEdges = edges.get(end);
 
-  const sorted = circuits.map((i) => i.size).sort((a, b) => b - a);
-  console.log("sorted sizes", sorted);
+    currStartEdges
+      ? edges.set(start, currStartEdges.add(end))
+      : edges.set(start, new Set([end]));
+    currEndEdges
+      ? edges.set(end, currEndEdges.add(start))
+      : edges.set(end, new Set([start]));
+    n++;
+  } while (n < limit);
 
-  return sorted[0] * sorted[1] * sorted[2];
+  const stack = [...nodes];
+  const visit = new Set<string>();
+  const sizes: number[] = [];
+
+  while (stack.length > 0) {
+    const nextItem = stack.pop()!;
+    if (!visit.has(nextItem)) {
+      visit.add(nextItem);
+      let counter = 1;
+      const queue: string[] = [];
+      const nextEdges = [...edges.get(nextItem)!];
+      nextEdges.forEach((i) => {
+        queue.push(i);
+        counter++;
+        visit.add(i);
+      });
+      while (queue.length > 0) {
+        const head = queue.shift()!;
+        const nextEdges = edges.get(head)!;
+        [...nextEdges].forEach((j) => {
+          if (!visit.has(j)) {
+            queue.push(j);
+            counter++;
+            visit.add(j);
+          }
+        });
+      }
+      sizes.push(counter);
+    }
+  }
+
+  const high = sizes.sort((a, b) => b - a);
+  return high[0] * high[1] * high[2];
 };
 
 export const partTwo = (s: string) => {
