@@ -32,5 +32,6 @@ export const partOne = (s: string) => {
 };
 
 export const partTwo = (s: string) => {
+  const locations = s.split("\n").map(toLocation);
   return 0;
 };

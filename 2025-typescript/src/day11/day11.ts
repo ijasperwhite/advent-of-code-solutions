@@ -42,6 +42,15 @@ export const partTwo = (s: string) => {
     nodes.push(node.curr);
     edges.set(node.curr, node.edges);
   });
+  const stack: string[] = [];
+  stack.push(nodes[nodes.findIndex((i) => i === "you")]);
+  let counter = 0;
+
+  while (stack.length > 0) {
+    const next = stack.pop()!;
+    const nextEdges = edges.get(next)!;
+    nextEdges.forEach((i) => (i === "out" ? counter++ : stack.push(i)));
+  }
 
   return 0;
 };

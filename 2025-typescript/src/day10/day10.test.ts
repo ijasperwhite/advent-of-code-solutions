@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { partOne, partTwo, toInput } from "./day10";
+import { isAtTarget, partOne, partTwo, toInput } from "./day10";
 import { fileContents } from "../utils/utils";
 
 describe("Day 10", () => {
@@ -8,7 +8,28 @@ describe("Day 10", () => {
       const input =
         "[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}";
       const result = toInput(input);
-      expect(result).toEqual({ target: [false, false, false, true, false] });
+      expect(result).toEqual({
+        target: [0, 0, 0, 1, 0],
+        curr: [0, 0, 0, 0, 0],
+        buttons: [
+          [1, 0, 1, 1, 1],
+          [0, 0, 1, 1, 0],
+          [1, 0, 0, 0, 1],
+          [1, 1, 1, 0, 0],
+          [0, 1, 1, 1, 1],
+        ],
+      });
+    });
+  });
+
+  describe("isAtTarget", () => {
+    it("should return true", () => {
+      const result = isAtTarget([1, 0, 1], [1, 0, 1]);
+      expect(result).toBe(true);
+    });
+    it("should return false", () => {
+      const result = isAtTarget([1, 0, 0], [1, 0, 1]);
+      expect(result).toBe(false);
     });
   });
 
@@ -16,7 +37,7 @@ describe("Day 10", () => {
     it("should return result for example", () => {
       const input = fileContents("day10/example.txt");
       const result = partOne(input);
-      expect(result).toBe(0);
+      expect(result).toBe(7);
     });
 
     it("should return result for input", () => {
