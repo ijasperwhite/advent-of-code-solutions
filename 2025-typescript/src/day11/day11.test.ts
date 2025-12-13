@@ -33,7 +33,7 @@ describe("Day 11", () => {
     it("should return result for input for part two", () => {
       const input = fileContents("day11/input_two.txt");
       const result = partTwo(input);
-      expect(result).toBe(0);
+      expect(result).toBe(383307150903216);
     });
   });
 });

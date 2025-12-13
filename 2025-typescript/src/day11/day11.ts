@@ -43,40 +43,31 @@ export const partTwo = (s: string) => {
     edges.set(node.curr, node.edges);
   });
 
-  const cache = new Map<string, number>();
-
   const explore = (
-    node: string,
-    fftPass: boolean,
-    dacPass: boolean
+    curr: string,
+    end: string,
+    visit: Set<string>,
+    scores: Map<string, number>
   ): number => {
-    console.log("processing", fftPass, dacPass);
-    if (cache.has(node)) {
-      return cache.get(node)!;
-    }
-    if (node === "out") {
-      console.log("new ending");
-      if (fftPass && dacPass) {
-        return 1;
-      }
-      return 0;
-    }
-    const next = edges.get(node)!;
-    return next
-      .map((nextNode) => {
-        if (cache.has(nextNode)) {
-          return cache.get(nextNode)!;
-        }
-        fftPass = fftPass ? fftPass : nextNode === "fft";
-        dacPass = dacPass ? dacPass : nextNode === "dac";
-        const key = explore(nextNode, fftPass, dacPass);
-        cache.set(nextNode, key);
-        return key;
-      })
+    if (curr === end) return 1;
+    if (visit.has(curr) || curr === "out") return 0;
+    if (scores.has(curr)) return scores.get(curr)!;
+    visit.add(curr);
+    const total = edges
+      .get(curr)!
+      .map((nextNode) => explore(nextNode, end, visit, scores))
       .reduce((sum, next) => sum + next);
+
+    visit.delete(curr);
+    scores.set(curr, total);
+    return total;
   };
 
-  const x = explore("svr", false, false);
-  console.log(cache);
-  return x;
+  const a = explore("svr", "fft", new Set(), new Map());
+  const b = explore("fft", "dac", new Set(), new Map());
+  const c = explore("dac", "out", new Set(), new Map());
+  const x = explore("svr", "dac", new Set(), new Map());
+  const y = explore("dac", "fft", new Set(), new Map());
+  const z = explore("fft", "out", new Set(), new Map());
+  return a * b * c + x * y * z;
 };
