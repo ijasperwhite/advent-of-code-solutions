@@ -133,13 +133,13 @@ describe("Day 10", () => {
   });
 
   describe("Part 2", () => {
-    it("should return result for example for part 2", () => {
+    it("should return result for example for part two", () => {
       const input = fileContents("day10/example.txt");
       const result = partTwo(input);
       expect(result).toBe(33);
     });
 
-    it("should return result for input", () => {
+    it("should return result for input for part two", () => {
       const input = fileContents("day10/input.txt");
       const result = partTwo(input);
       expect(result).toBe(0);

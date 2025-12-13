@@ -56,13 +56,6 @@ export const isAtTarget = (curr: number[], target: number[]): boolean => {
   return true;
 };
 
-export const isExceedOutput = (curr: number[], target: number[]): boolean => {
-  for (let i = 0; i < curr.length; i++) {
-    if (curr[i] > target[i]) return true;
-  }
-  return false;
-};
-
 export const subsetsBitmask = (nums: number[][]) => {
   const n = nums.length;
   const result = [];
@@ -108,7 +101,6 @@ export const partOne = (s: string) => {
     let min = buttons.length + 1;
 
     const combo = toButtonCombinations(buttons);
-    console.log(combo);
     for (let i = 0; i < combo.length; i++) {
       if (isAtTarget(combo[i].button, target) && combo[i].count < min) {
         min = combo[i].count;
@@ -122,39 +114,21 @@ export const partOne = (s: string) => {
 export const partTwo = (s: string) => {
   const rows = s.split("\n").map(toInput);
   const results = rows.map((r) => {
-    const { target, buttons, output } = r;
-    let min = output.reduce((prev, next) => prev * next) * buttons.length;
+    let { buttons, output } = r;
+    const target = output.map((a) => a % 2);
+    let min = buttons.length + 1;
+    let minFinalButton: Result;
 
     const combo = toButtonCombinations(buttons);
-    // console.log("combo length", combo.length);
-
-    const queue: Result[] = [];
-    combo.forEach((i) => queue.push(i)); // assume none exceed limit
-    while (queue.length > 0) {
-      const next = queue.shift()!;
-
-      if (
-        isAtTarget(next.button, target) &&
-        isAtTarget(next.output, output) &&
-        min > next.count
-      ) {
-        min = next.count;
-      }
-
-      for (let i = 0; i < combo.length; i++) {
-        const nextButton = getNextCurr(next.button, combo[i].button);
-        const nextOutput = getNextOutput(next.output, combo[i].output);
-
-        if (!isExceedOutput(nextOutput, output)) {
-          queue.push({
-            button: nextButton,
-            output: nextOutput,
-            count: next.count + combo[i].count,
-          });
-        }
+    for (let i = 0; i < combo.length; i++) {
+      if (isAtTarget(combo[i].button, target) && combo[i].count < min) {
+        min = combo[i].count;
+        minFinalButton = combo[i];
       }
     }
-    return min;
+    const remainingOutput = output.map((a, b) => a - minFinalButton.output[b]);
+    console.log(remainingOutput);
+    return 0;
   });
   return 0;
 };
